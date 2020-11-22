@@ -1,0 +1,62 @@
+##feign-client-services
+# 也就是微服务模块的一种特殊新功能，访问其他微服务中的服务
+
+#bom
+--------------------------------------------------
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+	<version>2.2.3.RELEASE</version>
+</dependency>
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-openfeign</artifactId>
+	<version>2.2.3.RELEASE</version>
+</dependency>
+
+<parent>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-parent</artifactId>
+	<version>2.3.6.RELEASE</version>
+	<relativePath/> <!-- lookup parent from repository -->
+</parent>
+
+
+
+#bootApplication.class
+--------------------------------------------------
+@EnableEurekaClient
+@EnableFeignClients
+
+
+#添加要引用的其他微服务的接口定义，接口要一致，例如：
+#这个定义就定义了要使用微服务名为login-server的controller的服务admin/login
+@FeignClient(name = "login-server")
+public interface LoginServerClient {
+    @GetMapping("admin/login")
+    String adminlogin();
+}
+
+使用的时候，直接使用注入方式使用即可，例如：
+@Resource
+private LoginServerClient loginClient;
+String info=loginClient.adminlogin();
+
+
+#application.properties
+--------------------------------------------------
+#修改内置tomcat端口号
+server.port=8081
+#设置项目上下文
+server.servlet.context-path=/feign-client-services
+
+spring.application.name=feign-client-services
+
+eureka.client.service-url.defaultZone=http://localhost:9999/eureka/
+eureka.instance.lease-renewal-interval-in-seconds=5
+eureka.instance.lease-expiration-duration-in-seconds=10
+eureka.instance.instance_id=${spring.cloud.client.hostname}:${server.port}
+
+
+#浏览器访问
+http://localhost:9999

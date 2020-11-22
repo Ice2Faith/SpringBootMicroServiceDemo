@@ -1,0 +1,50 @@
+##zuul-eureka-client
+# 使用zuul统一网关，实现跨域访问数据，这里结合eureka-client使用
+
+#bom
+--------------------------------------------------
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+	<version>2.2.3.RELEASE</version>
+</dependency>
+
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+	<version>2.2.3.RELEASE</version>
+</dependency>
+
+<parent>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-parent</artifactId>
+	<version>2.3.6.RELEASE</version>
+	<relativePath/> <!-- lookup parent from repository -->
+</parent>
+
+
+
+#bootApplication.class
+--------------------------------------------------
+@EnableZuulProxy
+@EnableEurekaClient
+
+
+
+#application.properties
+--------------------------------------------------
+#修改内置tomcat端口号
+server.port=8888
+#设置项目上下文
+server.servlet.context-path=/zuul-eureka-client
+
+spring.application.name=zuul-eureka-client
+
+eureka.client.service-url.defaultZone=http://localhost:9999/eureka/
+eureka.client.registry-fetch-interval-seconds=5
+eureka.instance.instance_id=${spring.cloud.client.hostname}:${server.port}:${spring.application.name}:@project.version@
+
+
+
+#浏览器访问
+http://localhost:9999

@@ -1,0 +1,47 @@
+##eureka-server
+# eureka服务注册中心，负责心跳检测服务客户端状态
+# 更多eureka/zuul/ribbon/feign查看：https://blog.csdn.net/qq_36720088/article/details/103417202
+
+#bom
+--------------------------------------------------
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+	<version>2.2.3.RELEASE</version>
+</dependency>
+
+<parent>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-parent</artifactId>
+	<version>2.3.6.RELEASE</version>
+	<relativePath/> <!-- lookup parent from repository -->
+</parent>
+
+
+
+#bootApplication.class
+--------------------------------------------------
+@EnableEurekaServer
+
+
+
+#application.properties
+--------------------------------------------------
+#修改内置tomcat端口号
+server.port=9999
+#设置项目上下文
+server.servlet.context-path=/eureka-server
+
+spring.application.name=eureka-server
+
+eureka.instance.hostname=localhost
+#关闭eureka服务器的自我保护功能，忽略网络分区故障
+eureka.server.enable-self-preservation=false
+#eureka服务器检测失效服务间隔时间
+eureka.server.eviction-interval-timer-in-ms:5000
+#eureka服务器本身也是一个客户端，不需要注册自身
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+
+#浏览器访问
+http://localhost:9999
